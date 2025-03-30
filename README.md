@@ -1,2 +1,2 @@
 # Quantum
-Repository for testing and studying quantum algorithms
+Repository for testing and studing quantum algorithms
