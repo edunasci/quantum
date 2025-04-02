@@ -63,7 +63,9 @@ def circuit_aperiod15(qc,qr,cr,a):
     qc.cx(qr[4],qr[2])
     qc.cx(qr[4],qr[0])
     #   feed forward
-    qc.p(math.pi/2.,qr[4]).c_if(cr, 1)
+    #qc.p(math.pi/2.,qr[4]).c_if(cr, 1)
+    with qc.if_test((cr,1)):
+        qc.p(math.pi/2.,qr[4])
     qc.h(qr[4])
     #   measure
     qc.measure(qr[4],cr[1])
@@ -74,9 +76,15 @@ def circuit_aperiod15(qc,qr,cr,a):
     #   controlled unitary.
     circuit_amod15(qc,qr,cr,a)
     #   feed forward
-    qc.p(3.*math.pi/4.,qr[4]).c_if(cr, 3)
-    qc.p(math.pi/2.,qr[4]).c_if(cr, 2)
-    qc.p(math.pi/4.,qr[4]).c_if(cr, 1)
+    #qc.p(3.*math.pi/4.,qr[4]).c_if(cr, 3)
+    #qc.p(math.pi/2.,qr[4]).c_if(cr, 2)
+    #qc.p(math.pi/4.,qr[4]).c_if(cr, 1)
+    with qc.if_test((cr,3)):
+        qc.p(3.*math.pi/4.,qr[4])
+    with qc.if_test((cr,2)):
+        qc.p(math.pi/2.,qr[4])
+    with qc.if_test((cr,1)):
+        qc.p(math.pi/4.,qr[4])
     qc.h(qr[4])
     #   measure
     qc.measure(qr[4],cr[2])
@@ -123,7 +131,8 @@ circuit_aperiod15(shor,q,c,7)
 shor.draw(output='mpl').show()
 plt.pause(300)
 
-backend = Aer.get_backend('qasm_simulator')
+#backend = Aer.get_backend('qasm_simulator')
+backend = Aer.get_backend('aer_simulator')
 transpiled_circuit = transpile(shor, backend)
 sim_job = backend.run(transpiled_circuit, shots=1024) 
 sim_result = sim_job.result()
