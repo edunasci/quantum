@@ -77,7 +77,7 @@ def find_orders_smp( bits, maxorder, maxtasks ):
     print(f'')
     print(f'*** Finding orders for Z*_N ***')
     print(f'')
-    print(f'Parameters: bits={b}, p={p}, q={q}, N={n}, maxorder={maxorder}')
+    print(f'Parameters: bits={bits}, p={p}, q={q}, N={n}, maxorder={maxorder}')
     print(f'')
     csvfile = open(f'data/orders_n_{n}_p_{p}_q_{q}.csv','w')
     csvfile.write('a,order\n')
