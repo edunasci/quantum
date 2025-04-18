@@ -59,7 +59,7 @@ def getnumberorder_smp( a, n, maxorder, csvfile, order_frequency, running_tasks,
             order_frequency[r] = 0
         order_frequency[r] += 1
         csvfile.write(f'{a},{r}\n')
-        csvfile.flush() 
+        #csvfile.flush() 
         print(f"Finished task {a}, running tasks: {running_tasks.value}") if __printdebug__ else None
     return
         
@@ -79,9 +79,11 @@ def find_orders_smp( bits, maxorder, maxtasks ):
     print(f'')
     print(f'Parameters: bits={bits}, p={p}, q={q}, N={n}, maxorder={maxorder}')
     print(f'')
+    #"""
     csvfile = open(f'data/orders_n_{n}_p_{p}_q_{q}.csv','w')
     csvfile.write('a,order\n')
     csvfile.flush() 
+    #"""
     R = {}
     orders_of_N = {}
     a=2
@@ -105,7 +107,9 @@ def find_orders_smp( bits, maxorder, maxtasks ):
     # Wait for all processes to finish
     for process in processes:
         process.join()
+    #"""
     csvfile.close()
+    #"""
     csvfile = open(f'data/orders_frequency_n_{n}_p_{p}_q_{q}.csv','w')
     csvfile.write('order,frequency\n')
     for r in order_frequency.keys():
