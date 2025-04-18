@@ -91,15 +91,16 @@ def find_orders_smp( b, maxorder, maxtasks ):
             a += 1
             continue
         while running_tasks.value >= maxtasks:
+            print(f"Waiting for a task to finish, running tasks: {running_tasks.value}") if __printdebug__ else None
+            for process in processes:
+                if not process.is_alive():
+                    processes.remove(process)
             time.sleep(0.1)  # if maxtask reachead, wait for a task to finish before starting a new one
         ## Start a new process
         process = multiprocessing.Process(target=getnumberorder_smp, args=(a, N, maxorder, csvfile, order_frequency, running_tasks, lock))
         process.start()
         processes.append(process)
         ## Check if any process has finished       
-        for process in processes:
-            if not process.is_alive():
-                processes.remove(process)
         a += 1
     # Wait for all processes to finish
     for process in processes:
