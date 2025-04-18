@@ -18,8 +18,8 @@ __version__     = '1.00'
 __maintainer__  = ''
 __email__       = ''
 __status__      = 'Production'
-__printdebug__  = True
-# __printdebug__  = False
+#__printdebug__  = True
+__printdebug__  = False
 
 import multiprocessing
 import time
