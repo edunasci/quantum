@@ -18,8 +18,8 @@ __version__     = '1.00'
 __maintainer__  = ''
 __email__       = ''
 __status__      = 'Production'
-#__printdebug__  = True
-__printdebug__  = False
+__printdebug__  = True
+#__printdebug__  = False
 
 import multiprocessing
 import time
@@ -32,24 +32,24 @@ import argparse
 #from decimal import *
 #import matplotlib.pyplot as plt
 
-def getPQ(N=16, limit=0.8):
+def getPQ(bits=16, limit=0.8):
     while True:
-        p = number.getPrime(N)
-        q = number.getPrime(N)
+        p = number.getPrime(bits)
+        q = number.getPrime(bits)
         p,q = min(p,q),max(p,q)
         if p/q < limit:
-            return p,q,N
+            return p,q
 
-def getnumberorder_smp( a, N, maxorder, csvfile, order_frequency, running_tasks, lock ):
+def getnumberorder_smp( a, n, maxorder, csvfile, order_frequency, running_tasks, lock ):
     with lock:
         running_tasks.value += 1
         print(f"Started task {a}, running tasks: {running_tasks.value}") if __printdebug__ else None
     if maxorder == None:
-        maxorder = N+1
+        maxorder = n+1
     result = 1
     r = 1
     while r <= maxorder:
-        result = (result * a)%N
+        result = (result * a)%n
         if result==1:
             break
         r += 1
@@ -63,7 +63,7 @@ def getnumberorder_smp( a, N, maxorder, csvfile, order_frequency, running_tasks,
         print(f"Finished task {a}, running tasks: {running_tasks.value}") if __printdebug__ else None
     return
         
-def find_orders_smp( b, maxorder, maxtasks ):
+def find_orders_smp( bits, maxorder, maxtasks ):
     # preparing multiprocessing
     global num_tasks, manager, lock, running_tasks
     manager = multiprocessing.Manager()
@@ -72,7 +72,7 @@ def find_orders_smp( b, maxorder, maxtasks ):
     running_tasks = multiprocessing.Value('i', 0)  # 'i' = integer
     processes = []
     #    
-    p,q,N = getPQ(N=b)
+    p,q = getPQ(bits=bits)
     n=p*q
     print(f'')
     print(f'*** Finding orders for Z*_N ***')
@@ -98,7 +98,7 @@ def find_orders_smp( b, maxorder, maxtasks ):
             print(f"Waiting for a task to finish, running tasks: {running_tasks.value}") if __printdebug__ else None
             time.sleep(0.1)  # if maxtask reachead, wait for a task to finish before starting a new one
         ## Start a new process
-        process = multiprocessing.Process(target=getnumberorder_smp, args=(a, N, maxorder, csvfile, order_frequency, running_tasks, lock))
+        process = multiprocessing.Process(target=getnumberorder_smp, args=(a, n, maxorder, csvfile, order_frequency, running_tasks, lock))
         process.start()
         processes.append(process)
         a += 1
