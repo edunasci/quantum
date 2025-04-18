@@ -18,8 +18,8 @@ __version__     = '1.00'
 __maintainer__  = ''
 __email__       = ''
 __status__      = 'Production'
-__printdebug__  = True
-#__printdebug__  = False
+#__printdebug__  = True
+__printdebug__  = False
 
 import multiprocessing
 import time
@@ -95,7 +95,7 @@ def find_orders_smp( bits, maxorder, maxtasks ):
             if not process.is_alive():
                 processes.remove(process)
         while running_tasks.value >= maxtasks:
-            print(f"Waiting for a task to finish, running tasks: {running_tasks.value}") if __printdebug__ else None
+            print(f"Waiting for a task to finish, running tasks: {running_tasks.value}") #if __printdebug__ else None
             time.sleep(0.1)  # if maxtask reachead, wait for a task to finish before starting a new one
         ## Start a new process
         process = multiprocessing.Process(target=getnumberorder_smp, args=(a, n, maxorder, csvfile, order_frequency, running_tasks, lock))
