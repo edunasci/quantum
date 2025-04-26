@@ -63,8 +63,8 @@ def getnumberorder_smp( a, n, maxorder, csvfile, order_frequency, running_tasks,
         print(f"Finished task {a}, running tasks: {running_tasks.value}") if __printdebug__ else None
     return
         
-def find_orders_smp( bits, maxorder, maxtasks ):
-    # preparing multiprocessing
+def find_orders_smp( bits, maxorder, maxtasks, samples ):
+    # preparing multiprocessing'
     global num_tasks, manager, lock, running_tasks
     manager = multiprocessing.Manager()
     order_frequency = manager.dict()
@@ -85,8 +85,12 @@ def find_orders_smp( bits, maxorder, maxtasks ):
     csvfile.flush() 
     R = {}
     orders_of_N = {}
+    sample = 0
     a=2
     while a<n:
+        ## if only a small sample is required, generate a random a
+        if samples != None:
+            a = random.randint(2, n-1)
         ## if a contains a factor of N, skip it
         if a%p == 0 or a%q == 0:
             a += 1
@@ -96,12 +100,16 @@ def find_orders_smp( bits, maxorder, maxtasks ):
             if not process.is_alive():
                 processes.remove(process)
         while running_tasks.value >= maxtasks:
-            print(f"Waiting for a task to finish, running tasks: {running_tasks.value}, a={a}") #if __printdebug__ else None
+            print(f"Waiting for a task to finish, running tasks: {running_tasks.value}, a={a}") if __printdebug__ else None
             time.sleep(0.1)  # if maxtask reachead, wait for a task to finish before starting a new one
         ## Start a new process
         process = multiprocessing.Process(target=getnumberorder_smp, args=(a, n, maxorder, csvfile, order_frequency, running_tasks, lock))
         process.start()
         processes.append(process)
+        if samples != None:
+            sample += 1
+            if sample >= samples:
+                break
         a += 1
     # Wait for all processes to finish
     for process in processes:
@@ -123,12 +131,23 @@ def main():
     parser.add_argument('-b','--bits', help='Enter "bits" to define the size of "p", "q" in bits', type=int, default=5)
     parser.add_argument('-m','--maxorder', help='Enter "maxorder" to define maximum order for the search', type=int, default=None)
     parser.add_argument('-t','--maxtasks', help='Enter "maxtasks" to define the maximum number of tasks running in parallel', type=int, default=8)
+    parser.add_argument('-s','--samples', help='Enter "samples" to define the number of random samples to check the order', type=int, default=None)
+    parser.add_argument('-r','--repeat', help='Enter "repeat" to define the number of repetitions will be made', type=int, default=1)
     args = parser.parse_args()
     bits = args.bits
     maxorder = args.maxorder
     maxtasks = args.maxtasks
-    find_orders_smp( bits, maxorder, maxtasks )
-
+    samples = args.samples
+    round = 0
+    while round < args.repeat:
+        round += 1
+        if args.repeat > 1:
+            roundStartTime=datetime.now()
+            print(f'Round {round} - Start: {roundStartTime.replace(microsecond=0)}\n\n')
+        find_orders_smp( bits, maxorder, maxtasks, samples)
+        if args.repeat > 1:
+            roundFinishTime=datetime.now()
+            print( f'\nRound {round} - Start: {roundStartTime.replace(microsecond=0)}, Finish:{roundFinishTime.replace(microsecond=0)}, Running Time: {roundFinishTime-roundStartTime}')
 if __name__ == '__main__':
     # track execution time
     startTime=datetime.now()
