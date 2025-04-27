@@ -1,14 +1,18 @@
 #!/usr/bin/env python3
 """
-usage: ordersearch_smp.py [-h] [-b BITS] [-m MAXORDER] [-t MAXTASKS]
+usage: ordersearch_smp.py [-h] [-b BITS] [-m MAXORDER] [-t MAXTASKS] [-s SAMPLES] [-r REPEAT]
 
 options:
   -h, --help            show this help message and exit
-  -b, --bits BITS       Enter "bits" to define the size of "p", "q" in bits
-  -m, --maxorder MAXORDER
+  -b BITS, --bits BITS  Enter "bits" to define the size of "p", "q" in bits
+  -m MAXORDER, --maxorder MAXORDER
                         Enter "maxorder" to define maximum order for the search
-  -t, --maxtasks MAXTASKS
+  -t MAXTASKS, --maxtasks MAXTASKS
                         Enter "maxtasks" to define the maximum number of tasks running in parallel
+  -s SAMPLES, --samples SAMPLES
+                        Enter "samples" to define the number of random samples to check the order
+  -r REPEAT, --repeat REPEAT
+                        Enter "repeat" to define the number of repetitions will be made
 """
 __author__      = 'Eduardo Marsola do Nascimento'
 __copyright__   = 'Copyright 2025-04-18'
@@ -74,11 +78,7 @@ def find_orders_smp( bits, maxorder, maxtasks, samples ):
     #    
     p,q = getPQ(bits=bits)
     n=p*q
-    print(f'')
-    print(f'*** Finding orders for Z*_N ***')
-    print(f'')
-    print(f'Parameters: bits={bits}, p={p}, q={q}, N={n}, maxorder={maxorder}')
-    print(f'')
+    print(f'Finding orders - arameters: bits={bits}, p={p}, q={q}, n={n}, maxorder={maxorder}')
     # Open a new file to save the orders
     csvfile = open(f'data/orders_n_{n}_p_{p}_q_{q}.csv','w')
     csvfile.write('a,order\n')
@@ -143,17 +143,17 @@ def main():
         round += 1
         if args.repeat > 1:
             roundStartTime=datetime.now()
-            print(f'Round {round} - Start: {roundStartTime.replace(microsecond=0)}\n\n')
+            print(f'Round {round} - Start: {roundStartTime.replace(microsecond=0)}\n')
         find_orders_smp( bits, maxorder, maxtasks, samples)
         if args.repeat > 1:
             roundFinishTime=datetime.now()
-            print( f'\nRound {round} - Start: {roundStartTime.replace(microsecond=0)}, Finish:{roundFinishTime.replace(microsecond=0)}, Running Time: {roundFinishTime-roundStartTime}')
+            print( f'\nRound {round} - Start: {roundStartTime.replace(microsecond=0)}, Finish:{roundFinishTime.replace(microsecond=0)}, Running Time: {roundFinishTime-roundStartTime}\n\n')
 if __name__ == '__main__':
     # track execution time
     startTime=datetime.now()
-    print(f'Start: {startTime.replace(microsecond=0)}\n\n')
+    print(f'Start: {startTime.replace(microsecond=0)}\n')
     main()
     # track execution time
     finishTime=datetime.now()
-    print( f'\nStart: {startTime.replace(microsecond=0)}, Finish:{finishTime.replace(microsecond=0)}, Running Time: {finishTime-startTime}')
+    print( f'\nStart: {startTime.replace(microsecond=0)}, Finish:{finishTime.replace(microsecond=0)}, Running Time: {finishTime-startTime}\n\n')
 
