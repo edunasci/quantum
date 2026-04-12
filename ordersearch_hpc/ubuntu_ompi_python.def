@@ -1,0 +1,48 @@
+Bootstrap: docker
+From: ufscar/ubuntu_ompi:latest
+
+%labels
+    Author Eduardo Marsola do Nascimento
+    Description "Singularity container com Python + OpenMPI"
+
+%environment
+    # Variáveis de ambiente disponíveis em runtime
+    export VIRTUAL_ENV=/opt/venv
+    export PATH="$VIRTUAL_ENV/bin:$PATH"
+    export PYTHONUNBUFFERED=1    
+
+%post
+    echo "Instalando dependências do sistema..."
+    apt-get update && apt-get install -y \
+        python3 \
+        python3-full \
+        python3-venv \
+        python3-dev \
+        build-essential \
+        libffi-dev \
+        libssl-dev \
+        && apt-get clean
+
+    # Cria ambiente virtual
+    python3 -m venv /opt/venv
+
+    # Ativa venv e instala pacotes
+    . /opt/venv/bin/activate
+
+    echo "Atualizando pip..."
+    pip3 install --upgrade pip
+
+    echo "Instalando bibliotecas Python..."
+    pip3 install numpy mpi4py matplotlib pycryptodome
+
+    # Diretório padrão para dados
+    mkdir -p /opt/ordersearch_hpc
+    mkdir -p /opt/ordersearch_hpc/data
+    mkdir -p /tmp/ompi
+
+
+%runscript
+    echo "Container Singularity Python + OMPI"
+    echo "Executando comando:"
+    echo "$@"
+    exec "$@"
