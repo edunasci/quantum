@@ -180,9 +180,13 @@ cython_debug/
 # local stuff
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 data/
 
 bin/*
+=======
+data/
+>>>>>>> 0772ea1cd680708d0ba8e65898cc4d8c3892f7c8
 =======
 data/
 >>>>>>> 0772ea1cd680708d0ba8e65898cc4d8c3892f7c8

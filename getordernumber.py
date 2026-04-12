@@ -39,6 +39,7 @@ def getZ_star_N( N ):
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 def getnumberorder( a, n, maxorder=None ):
     a = a % n
     if a == 0:
@@ -57,6 +58,8 @@ def getnumberorder( a, n, maxorder=None ):
 =======
 =======
 >>>>>>> 0772ea1cd680708d0ba8e65898cc4d8c3892f7c8
+=======
+>>>>>>> 0772ea1cd680708d0ba8e65898cc4d8c3892f7c8
 def getnumberorder( a, N, maxorder ):
     if maxorder == None:
         maxorder = N
@@ -67,6 +70,9 @@ def getnumberorder( a, N, maxorder ):
         if m==1:
             return i
 <<<<<<< HEAD
+<<<<<<< HEAD
+>>>>>>> 0772ea1cd680708d0ba8e65898cc4d8c3892f7c8
+=======
 >>>>>>> 0772ea1cd680708d0ba8e65898cc4d8c3892f7c8
 =======
 >>>>>>> 0772ea1cd680708d0ba8e65898cc4d8c3892f7c8

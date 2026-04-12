@@ -3,6 +3,12 @@ Repository for testing and studing quantum algorithms
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+
+
+
+>>>>>>> 0772ea1cd680708d0ba8e65898cc4d8c3892f7c8
 =======
 
 
@@ -34,6 +40,7 @@ to prepare the environment
     pip install pennylane
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 ## installing openmpi (olny to emulate the cluster environment)
 sudo apt install openmpi-bin 
 
@@ -54,6 +61,8 @@ scancel <numero>: Cancela um script enviado de número de identificação <numer
 
 
 
+=======
+>>>>>>> 0772ea1cd680708d0ba8e65898cc4d8c3892f7c8
 =======
 >>>>>>> 0772ea1cd680708d0ba8e65898cc4d8c3892f7c8
 =======
