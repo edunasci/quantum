@@ -17,7 +17,6 @@ __email__       = ''
 __status__      = 'Production'
 __printdebug__  = False
 
-
 from decimal import *
 from datetime import datetime
 from Crypto.Util import number
