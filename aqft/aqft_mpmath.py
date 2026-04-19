@@ -115,10 +115,17 @@ def bit_reverse(x: int, nbits: int) -> int:
         x >>= 1
     return out
 
+def reorder_probabilities(probs, L):
+    reordered_probs = np.zeros_like(probs)
+    for y, p in enumerate(probs):
+        reordered_probs[bit_reverse(y, L)] = p
+    return reordered_probs
+
 def aqft_example(N, a, r, p, q):
     L = int(mp.log(N, 2)) + 1
     phi = (1/r)
     M = 2 ** L
+    m = 5
 
     print(f"Exemplo: N={N}, a={a}, r={r}, p={p}, q={q}, L={L}, phi=2*pi*{phi:.16f}")
 
@@ -131,19 +138,32 @@ def aqft_example(N, a, r, p, q):
     # IQFT
     psi_iqft = iqft_state(psi, L)
     prob_iqft = probabilities(psi_iqft)
+    prob_iqft = reorder_probabilities(prob_iqft, L) 
+    peak_prob = 0
+    expected_peak = np.round(np.arange(2**L/r,2**L,2**L/r)).astype(int)
     print("IQFT probabilities:")
     for i, p in enumerate(prob_iqft):
         print(f'{i:0{L}b}: {float(p):.16f}')
+        if i in expected_peak:
+            peak_prob += p
     print(f'total probability: {float(sum(prob_iqft)):.16f} ')
+    print(f'expected peaks at: {expected_peak} with total probability {float(peak_prob):.16f}')
     print(f'')
 
-    # AQFT with truncation m=5
-    psi_aqft = aqft_dagger_state(psi, L, m=5)
+    # AQFT with truncation m
+    psi_aqft = aqft_dagger_state(psi, L, m)
     prob_aqft = probabilities(psi_aqft)
-    print("\nAQFT probabilities (m=5):")
+    prob_aqft = reorder_probabilities(prob_aqft, L) 
+    
+    peak_prob = 0
+    expected_peak = np.round(np.arange(2**L/r,2**L,2**L/r)).astype(int)
+    print(f"\nAQFT probabilities (m={m}):")
     for i, p in enumerate(prob_aqft):
         print(f'{i:0{L}b}: {float(p):.16f}')
+        if i in expected_peak:
+            peak_prob += p
     print(f'total probability: {float(sum(prob_aqft)):.16f} ')
+    print(f'expected peaks at: {expected_peak} with total probability {float(peak_prob):.16f}')
     print(f'')
 
     error = sum(mp.fabs(prob_iqft[i] - prob_aqft[i]) for i in range(len(prob_iqft)))
@@ -152,25 +172,19 @@ def aqft_example(N, a, r, p, q):
 
     i=0
     for probs in [prob_iqft, prob_aqft]:
-        reordered_probs = np.zeros_like(probs)
-        for y, p in enumerate(probs):
-            reordered_probs[bit_reverse(y, L)] = p
-    
-        ys = np.arange(len(reordered_probs))
-        peak_y = np.argmax(reordered_probs)
-        peak_value = np.max(reordered_probs)
-
+        ys = np.arange(len(probs))
+        peak_y = np.argmax(probs)
+        peak_value = np.max(probs)
         plt.figure()
-        plt.stem(ys, reordered_probs)
+        plt.stem(ys, probs)
         plt.xlabel("Y")
         plt.ylabel("Probability")
         plt.title(f"Frequency Spectrum - max at y={peak_y} {peak_y:0{L}b} ({float(peak_value):.6f})")
         plt.vlines(peak_y, 0, peak_value,colors='r', linestyles='dashed', label='Peak')
-        plt.savefig(f'img/probability_mpmath_{i}_L_{L}.png')
+        plt.savefig(f'img/probability_mpmath_{'IQFT' if i == 0 else 'AQFT'}_L_{L}.png')
         #plt.show()
         i+=1
     return
-
 # -----------------------------------
 # Example
 # -----------------------------------
@@ -178,5 +192,6 @@ if __name__ == "__main__":
 
     #aqft_example(N=15, a=8, r=4, p=3, q=5)
     #aqft_example(N=21, a=11, r=6, p=7, q=3)
-    aqft_example(N=29737, a=9094, r=14690, p=131, q=227)
+    #aqft_example(N=29737, a=9094, r=14690, p=131, q=227)
+    aqft_example(N=26123, a=10452, r=516, p=151, q=173)
 
